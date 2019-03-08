@@ -21,15 +21,25 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        if UserDefaults.standard.bool(forKey: "userLoggedIn") == true {
+            self.performSegue(withIdentifier: "loginToHome", sender: self)
+        }
+    }
   
     @IBAction func onTapLogin(_ sender: Any) {
         let urlString = "https://api.twitter.com/oauth/request_token"
         
+        
+        self.dismiss(animated: true, completion: nil)
+        
         TwitterAPICaller.client?.login(url: urlString, success: {
+            
+            UserDefaults.standard.set(true, forKey: "userLoggedIn")
             // on login success, present hometableVC
             self.performSegue(withIdentifier: "loginToHome", sender: self)
-        }, failure: { (Error)
-            in print("Error, Could not log in.") // notify user error has occurred
+        }, failure: { (Error) in
+            print("Error, Could not log in.") // notify user error has occurred
             // set up an alert controller
             let title = "Error"
             let message = "An error has occured. Unable to log-in."
