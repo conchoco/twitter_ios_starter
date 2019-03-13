@@ -20,7 +20,15 @@ class HomeTableTableViewController: UITableViewController {
         loadTweets() // Loads loadTweet() function when the view loads
         
         myRefreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
-        tableView.refreshControl = myRefreshControl
+        self.tableView.refreshControl = myRefreshControl
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 150
+           
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.loadTweets()
     }
     
     @IBAction func onLogout(_ sender: Any) {
@@ -93,6 +101,11 @@ class HomeTableTableViewController: UITableViewController {
         if let imageData = data {
             cell.profileImageView.image = UIImage(data: imageData)
         }
+        
+        // check if the post is already favorited by indexing the API for favorited
+        cell.setFavorite(tweetArray[indexPath.row]["favorited"] as! Bool)
+        
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
         
         return cell
 
